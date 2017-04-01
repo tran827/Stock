@@ -1,14 +1,58 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
     <title>My Stocks</title>
   </head>
 
   <body>
     <h1>Welcome Motherfucker!</h1>
     <div>
-      Symbol Lookup: <input type="text" name="symbol">
-      <input type="submit" value="Submit">
+      Symbol Lookup: <input type="text" id="symbolInput">
+      <input type="submit" value="Submit" onclick="lookupStock()">
     </div>
   </body>
+
+  <script>
+    function lookupStock() {
+      var symbolInput = document.getElementById("symbolInput").value;
+      var baseUrl = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22"
+                      + symbolInput + "%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
+      httpGet(baseUrl);
+      // console.log(httpGet(baseUrl));
+    }
+
+    function httpGet(theUrl)
+    {
+      if (window.XMLHttpRequest)
+      {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+      }
+      else
+      {// code for IE6, IE5
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+      }
+
+      var stock;
+      xmlhttp.onreadystatechange=function()
+      {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+          stock = xmlhttp.responseText;
+          getStockData(stock, "Name");
+          getStockData(stock, "LastTradePriceOnly")
+        }
+      }
+      xmlhttp.open("GET", theUrl, false );
+      xmlhttp.send();
+      return stock;
+    }
+
+    function getStockData(stock, info) {
+      var testSplit = stock.split(info)[1];
+      var testSplit2 = testSplit.split(",")[0];
+      var price = testSplit2.split("\"")[2];
+      console.log(price);
+    }
+  </script>
 </html>
