@@ -11,6 +11,8 @@
       Symbol Lookup: <input type="text" id="symbolInput">
       <input type="submit" value="Submit" onclick="lookupStock()">
     </div>
+    <h3 id=name></h3>
+    <h3 id=price></h3>
   </body>
 
   <script>
@@ -39,8 +41,8 @@
         if (xmlhttp.readyState==4 && xmlhttp.status==200)
         {
           stock = xmlhttp.responseText;
-          getStockData(stock, "Name");
-          getStockData(stock, "LastTradePriceOnly")
+          document.getElementById('name').innerText = getStockData(stock, "Name") + " (" + document.getElementById("symbolInput").value.toUpperCase() +")";
+          document.getElementById('price').innerText = getStockData(stock, "LastTradePriceOnly")
         }
       }
       xmlhttp.open("GET", theUrl, false );
@@ -53,6 +55,7 @@
       var testSplit2 = testSplit.split(",")[0];
       var price = testSplit2.split("\"")[2];
       console.log(price);
+      return price;
     }
   </script>
 </html>
